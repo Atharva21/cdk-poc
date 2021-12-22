@@ -70,6 +70,7 @@ export class CdkPocStack extends Stack {
 				path.join(
 					__dirname,
 					"..",
+					"..",
 					"src",
 					"functions",
 					"PublisherFunction"
@@ -89,6 +90,7 @@ export class CdkPocStack extends Stack {
 			code: Code.fromAsset(
 				path.join(
 					__dirname,
+					"..",
 					"..",
 					"src",
 					"functions",
