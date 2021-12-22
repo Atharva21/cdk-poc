@@ -1,4 +1,10 @@
-import { Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+import {
+	aws_lambda_event_sources,
+	Duration,
+	RemovalPolicy,
+	Stack,
+	StackProps,
+} from "aws-cdk-lib";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import { LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
@@ -7,7 +13,7 @@ import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from "constructs";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import * as path from "path";
-import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { Queue } from "aws-cdk-lib/aws-sqs";
 
 export class CdkPocStack extends Stack {
 	private _publisherFunction: Function;
@@ -15,6 +21,7 @@ export class CdkPocStack extends Stack {
 	private _api: RestApi;
 	private _table: Table;
 	private _bucket: Bucket;
+	private _sqs: Queue;
 
 	constructor(scope: Construct, id: string, props?: StackProps) {
 		super(scope, id, props);
@@ -49,6 +56,12 @@ export class CdkPocStack extends Stack {
 			description: "rest api to store site data in dynamo db.",
 		});
 
+		//sqs.
+		this._sqs = new Queue(this, "queue", {
+			queueName: "cdk-poc-site-queue",
+			removalPolicy: RemovalPolicy.DESTROY,
+		});
+
 		// lambda #1
 		this._publisherFunction = new Function(this, "PublisherFunction", {
 			runtime: Runtime.PYTHON_3_9,
@@ -65,6 +78,7 @@ export class CdkPocStack extends Stack {
 			handler: "app.main",
 			environment: {
 				BUCKET_NAME: this._bucket.bucketName,
+				QUEUE_NAME: this._sqs.queueName,
 			},
 		});
 
@@ -84,6 +98,7 @@ export class CdkPocStack extends Stack {
 			handler: "app.main",
 			environment: {
 				BUCKET_NAME: this._bucket.bucketName,
+				TABLE_NAME: this._table.tableName,
 			},
 		});
 
@@ -95,5 +110,21 @@ export class CdkPocStack extends Stack {
 			}
 		);
 		this._api.root.addMethod("POST", postSiteIntegration);
+
+		// sqs access.
+		this._sqs.grantSendMessages(this._publisherFunction);
+		this._sqs.grantConsumeMessages(this._subscriberFunction);
+		// trigger for subscriber function.
+		const eventSource = new aws_lambda_event_sources.SqsEventSource(
+			this._sqs
+		);
+		this._subscriberFunction.addEventSource(eventSource);
+
+		// table access.
+		this._table.grantWriteData(this._subscriberFunction);
+
+		// s3 access.
+		this._bucket.grantWrite(this._publisherFunction);
+		this._bucket.grantRead(this._subscriberFunction);
 	}
 }
