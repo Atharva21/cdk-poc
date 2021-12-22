@@ -54,6 +54,9 @@ export class CdkPocStack extends Stack {
 		this._api = new RestApi(this, "cdk-poc-api", {
 			restApiName: "cdk-poc-api",
 			description: "rest api to store site data in dynamo db.",
+			deployOptions: {
+				stageName: "beta",
+			},
 		});
 
 		//sqs.
@@ -128,5 +131,6 @@ export class CdkPocStack extends Stack {
 		// s3 access.
 		this._bucket.grantWrite(this._publisherFunction);
 		this._bucket.grantRead(this._subscriberFunction);
+		this._bucket.grantDelete(this._subscriberFunction);
 	}
 }
