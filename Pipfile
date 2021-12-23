@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 boto3 = "*"
 pytest = "*"
+pytest-mock = "*"
+moto = "*"
+wheel = "*"
 
 [dev-packages]
 
