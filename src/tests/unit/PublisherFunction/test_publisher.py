@@ -1,9 +1,6 @@
+import src.functions.PublisherFunction.app as publisher
+
+
 def test_sample():
-    result = {
-        'statusCode': 200,
-        'body': 'published message to SQS'
-    }
-    assert result == {
-        'statusCode': 200,
-        'body': 'published message to SQS'
-    }
+    tmp = publisher.main(None, None)
+    assert tmp == 'hi'
