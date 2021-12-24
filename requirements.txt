@@ -1,0 +1,8 @@
+aws-lambda-powertools[pydantic]==1.8.0
+boto3==1.16.25
+botocore==1.19.25
+pytest-cov==2.10.1
+pytest-mock==3.3.1
+pytest==6.1.2
+requests-mock==1.8.0
+requests==2.25.0
