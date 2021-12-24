@@ -9,6 +9,9 @@ pytest = "*"
 pytest-mock = "*"
 moto = "*"
 wheel = "*"
+botocore = "*"
+pytest-cov = "*"
+aws-lambda-powertools = "*"
 
 [dev-packages]
 
