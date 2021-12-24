@@ -11,13 +11,14 @@ import { LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from "constructs";
-import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { Code, Function, LayerVersion, Runtime } from "aws-cdk-lib/aws-lambda";
 import * as path from "path";
 import { Queue } from "aws-cdk-lib/aws-sqs";
 
 export class CdkPocStack extends Stack {
 	private _publisherFunction: Function;
 	private _subscriberFunction: Function;
+	private _lambdaLayer: LayerVersion;
 	private _api: RestApi;
 	private _table: Table;
 	private _bucket: Bucket;
@@ -65,6 +66,15 @@ export class CdkPocStack extends Stack {
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
 
+		// the lambda layer
+		this._lambdaLayer = new LayerVersion(this, "cdk-poc-python-layer", {
+			code: Code.fromAsset(
+				path.join(__dirname, "..", "..", "python.zip")
+			),
+			compatibleRuntimes: [Runtime.PYTHON_3_8, Runtime.PYTHON_3_9],
+			description: "python lambda layer with third party libraries",
+		});
+
 		// lambda #1
 		this._publisherFunction = new Function(this, "PublisherFunction", {
 			runtime: Runtime.PYTHON_3_9,
@@ -84,6 +94,7 @@ export class CdkPocStack extends Stack {
 				BUCKET_NAME: this._bucket.bucketName,
 				QUEUE_NAME: this._sqs.queueName,
 			},
+			layers: [this._lambdaLayer],
 		});
 
 		// lambda #2
@@ -105,6 +116,7 @@ export class CdkPocStack extends Stack {
 				BUCKET_NAME: this._bucket.bucketName,
 				TABLE_NAME: this._table.tableName,
 			},
+			layers: [this._lambdaLayer],
 		});
 
 		// setup post call to root to publisherLambda.
@@ -116,10 +128,9 @@ export class CdkPocStack extends Stack {
 		);
 		this._api.root.addMethod("POST", postSiteIntegration);
 
-		// sqs access.
+		// sqs access and subscriber trigger.
 		this._sqs.grantSendMessages(this._publisherFunction);
 		this._sqs.grantConsumeMessages(this._subscriberFunction);
-		// trigger for subscriber function.
 		const eventSource = new aws_lambda_event_sources.SqsEventSource(
 			this._sqs
 		);
