@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, NamedTuple
 import pytest
 import os
 import json
@@ -12,7 +12,7 @@ import boto3
 
 @pytest.fixture(scope="function")
 def valid_payload() -> Dict:
-    return {
+    yield {
         'body': json.dumps(
             {
                 "siteId": "2040111",
@@ -67,15 +67,19 @@ def lambda_context():
     yield Lambda_Context()
 
 
-@mock_s3
-@mock_sqs
-def test_sample(valid_payload, lambda_context):
-    s3boto = boto3.resource('s3', region_name='ap-south-1')
-    sqs_boto = boto3.resource('sqs')
-    sqs_boto.create_queue(QueueName=os.getenv('QUEUE_NAME'))
-    s3boto.create_bucket(Bucket=os.getenv('BUCKET_NAME'), CreateBucketConfiguration={
-        'LocationConstraint': os.getenv('AWS_REGION'),
-    })
+@pytest.fixture
+def mock_aws():
+    with mock_s3(), mock_sqs():
+        s3boto = boto3.resource('s3', region_name='ap-south-1')
+        sqs_boto = boto3.resource('sqs')
+        sqs_boto.create_queue(QueueName=os.getenv('QUEUE_NAME'))
+        s3boto.create_bucket(Bucket=os.getenv('BUCKET_NAME'), CreateBucketConfiguration={
+            'LocationConstraint': os.getenv('AWS_REGION'),
+        })
+        yield
+
+
+def test_positive_scenario(mock_aws, valid_payload, lambda_context):
     import src.functions.PublisherFunction.app as publisher
     result = publisher.main(valid_payload, lambda_context)
     assert result == {
