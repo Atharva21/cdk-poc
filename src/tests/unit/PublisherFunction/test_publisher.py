@@ -6,7 +6,7 @@ from moto import mock_s3, mock_sqs
 from uuid import uuid4
 import boto3
 # import src.functions.PublisherFunction.app as publisher
-# ! 👇 doesnt work?!
+# ! 👇 relative import doesnt work?!
 # from ....functions.PublisherFunction import app as publisher
 
 
