@@ -5,9 +5,6 @@ import json
 from moto import mock_s3, mock_sqs
 from uuid import uuid4
 import boto3
-# import src.functions.PublisherFunction.app as publisher
-# ! 👇 relative import doesnt work?!
-# from ....functions.PublisherFunction import app as publisher
 
 
 @pytest.fixture(scope="function")
@@ -80,6 +77,8 @@ def mock_aws():
 
 
 def test_positive_scenario(mock_aws, valid_payload, lambda_context):
+    # ! 👇 relative import doesnt work?!
+    # from ....functions.PublisherFunction import app as publisher
     import src.functions.PublisherFunction.app as publisher
     result = publisher.main(valid_payload, lambda_context)
     assert result == {
