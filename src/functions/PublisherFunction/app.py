@@ -25,6 +25,7 @@ def main(event: Dict[str, Any], context: LambdaContext):
     request_id = context.aws_request_id or uuid.uuid4()
     logger.structure_logs(append=True, requestId=request_id)
     try:
+        # write body to s3 bucket
         body = json.loads(event['body'])
         logger.info(f'publisher lambda called with requestId {request_id}')
         filename = f'{uuid.uuid4()}.json'
@@ -33,10 +34,13 @@ def main(event: Dict[str, Any], context: LambdaContext):
             Body=(bytes(json.dumps(body).encode('UTF-8')))
         )
         logger.info(f'put {filename} into s3 bucket.')
+
+        # send filename to sqs.
         queue.send_message(MessageBody=json.dumps({
             'file_name': filename
         }))
         logger.info(f'sent {filename} to sqs')
+
         return {
             'statusCode': 200,
             'body': 'published message to SQS'
