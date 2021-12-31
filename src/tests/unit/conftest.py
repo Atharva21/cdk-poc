@@ -26,6 +26,6 @@ def mock_envs():
     os.environ['QUEUE_NAME'] = 'test-queue'
 
 
-@pytest.fixture(scope="package", autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def disable_metric_warning():
     warnings.filterwarnings('ignore', 'No metrics to publish*')

@@ -52,7 +52,8 @@ def main(event, context: LambdaContext):
             'statusCode': 200,
             'body': 'fetched content from s3 and stored in ddb'
         }
-    except Exception:
+    except Exception as e:
+        logger.error(str(e))
         return {
             'statusCode': 500,
             'body': 'something went wrong'

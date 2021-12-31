@@ -59,7 +59,7 @@ def lambda_context():
             self.function_name = 'function_name'
             self.function_version = "v$LATEST"
             self.memory_limit_in_mb = 512
-            self.invoked_function_arn = "arn:aws:lambda:us-east-1:ACCOUNT:function:self.function_name"
+            self.invoked_function_arn = "arn:aws:lambda:ap-south-1:ACCOUNT:function:self.function_name"
             self.aws_request_id = str(uuid4())
     yield Lambda_Context()
 
@@ -79,8 +79,8 @@ def mock_aws():
 def test_positive_scenario(mock_aws, valid_payload, lambda_context):
     # ! 👇 relative import doesnt work?!
     # from ....functions.PublisherFunction import app as publisher
-    import src.functions.PublisherFunction.app as publisher
-    result = publisher.main(valid_payload, lambda_context)
+    from src.functions.PublisherFunction.app import main as publisher
+    result = publisher(valid_payload, lambda_context)
     assert result == {
         'statusCode': 200,
         'body': 'published message to SQS'

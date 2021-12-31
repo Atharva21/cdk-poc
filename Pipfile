@@ -7,7 +7,7 @@ name = "pypi"
 boto3 = "*"
 pytest = "*"
 pytest-mock = "*"
-moto = "*"
+moto = {extras = ["dynamodb"], version = "*"}
 wheel = "*"
 botocore = "*"
 pytest-cov = "*"
