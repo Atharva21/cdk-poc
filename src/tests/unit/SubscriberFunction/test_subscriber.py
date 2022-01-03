@@ -4,7 +4,6 @@ import boto3
 from uuid import uuid4
 import os
 import json
-from src.tests.unit.PublisherFunction.test_publisher import valid_payload
 
 
 @pytest.fixture(scope='function')
