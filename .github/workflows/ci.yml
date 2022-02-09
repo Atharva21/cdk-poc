@@ -72,10 +72,22 @@ jobs:
       - name: Install CDK
         run: yarn --cwd ./deploy/ install
 
-      - name: Synth stack
+      - name: Test deployment
+        run: yarn --cwd ./deploy/ test
+
+      - name: CDK Synth
         run: yarn --cwd ./deploy/ cdk synth
 
+      - name: CDK Diff
+        run: yarn --cwd ./deploy/ cdk diff
+
+      - name: CDK - Bootstrap
+        run: yarn --cwd ./deploy/ cdk bootstrap
+
+      - name: Create artifact directory
+        run: mkdir -p artifact
+
       - name: Deploy stack
-        run: yarn --cwd ./deploy/ cdk deploy --require-approval never
+        run: yarn --cwd ./deploy/ cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
       # - name: Deploy stack
       #   run: yarn --cwd packages/bootstrap cdk deploy --require-approval never
