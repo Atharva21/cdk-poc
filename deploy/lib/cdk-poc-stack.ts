@@ -29,7 +29,7 @@ export class CdkPocStack extends Stack {
 
 		// s3 bucket.
 		this._bucket = new s3.Bucket(this, "bucket", {
-			bucketName: "cdk-poc-bucket",
+			bucketName: "cdk-poc-user-bucket",
 			blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
 			versioned: false,
 			encryption: s3.BucketEncryption.UNENCRYPTED,
