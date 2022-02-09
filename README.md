@@ -9,8 +9,7 @@ Simple, clean, and easy to get started with your custom requirements.
 - Stuck how to integrate AWS services with CDK? Or how to setup a python lambda testing pipeline? This template is for you to refer!  
 
 ## Architecture: 
-![architecture](https://user-images.githubusercontent.com/35309821/153059229-0b156d4b-d8df-418e-a0ff-7d63fb940443.png)
-
+![cdk-poc](https://user-images.githubusercontent.com/35420813/153103540-c649c65d-dd72-4f0e-ba2f-62ca8aa4bb6d.jpg)
 
 ## Deploy:
 -   `npm run watch` watch for changes and compile
