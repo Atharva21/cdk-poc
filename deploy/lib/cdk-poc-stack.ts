@@ -1,5 +1,6 @@
 import {
 	aws_lambda_event_sources,
+	CfnOutput,
 	Duration,
 	RemovalPolicy,
 	Stack,
@@ -58,6 +59,10 @@ export class CdkPocStack extends Stack {
 			deployOptions: {
 				stageName: "beta",
 			},
+		});
+
+		new CfnOutput(this, "API_URL", {
+			value: this._api.url,
 		});
 
 		//sqs.
