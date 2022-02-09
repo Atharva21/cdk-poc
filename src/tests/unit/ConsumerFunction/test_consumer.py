@@ -74,3 +74,4 @@ def test_positive_scenario(mock_aws, valid_event, lambda_context):
         'statusCode': 200,
         'body': 'fetched content from s3 and stored in ddb'
     }
+    assert False
