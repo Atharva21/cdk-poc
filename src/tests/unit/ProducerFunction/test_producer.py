@@ -79,8 +79,8 @@ def mock_aws():
 def test_positive_scenario(mock_aws, valid_payload, lambda_context):
     # ! 👇 relative import doesn't work?!
     # from ....functions.PublisherFunction import app as publisher
-    from src.functions.PublisherFunction.app import main as publisher
-    result = publisher(valid_payload, lambda_context)
+    from src.functions.ProducerFunction.app import main as producer
+    result = producer(valid_payload, lambda_context)
     assert result == {
         'statusCode': 200,
         'body': 'published message to SQS'

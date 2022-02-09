@@ -67,8 +67,8 @@ def mock_aws(valid_payload):
 
 
 def test_positive_scenario(mock_aws, valid_event, lambda_context):
-    from src.functions.SubscriberFunction.app import main as subscriber
-    result = subscriber(valid_event, lambda_context)
+    from src.functions.ConsumerFunction.app import main as consumer
+    result = consumer(valid_event, lambda_context)
     assert result == {
         'statusCode': 200,
         'body': 'fetched content from s3 and stored in ddb'

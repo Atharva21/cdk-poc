@@ -16,8 +16,8 @@ import * as path from "path";
 import { Queue } from "aws-cdk-lib/aws-sqs";
 
 export class CdkPocStack extends Stack {
-	private _publisherFunction: Function;
-	private _subscriberFunction: Function;
+	private _producerFunction: Function;
+	private _consumerFunction: Function;
 	private _lambdaLayer: LayerVersion;
 	private _api: RestApi;
 	private _table: Table;
@@ -76,9 +76,9 @@ export class CdkPocStack extends Stack {
 		});
 
 		// lambda #1
-		this._publisherFunction = new Function(this, "PublisherFunction", {
+		this._producerFunction = new Function(this, "ProducerFunction", {
 			runtime: Runtime.PYTHON_3_9,
-			functionName: "publisher-function",
+			functionName: "producer-function",
 			code: Code.fromAsset(
 				path.join(
 					__dirname,
@@ -86,7 +86,7 @@ export class CdkPocStack extends Stack {
 					"..",
 					"src",
 					"functions",
-					"PublisherFunction"
+					"ProducerFunction"
 				)
 			),
 			handler: "app.main",
@@ -98,9 +98,9 @@ export class CdkPocStack extends Stack {
 		});
 
 		// lambda #2
-		this._subscriberFunction = new Function(this, "SubscriberFunction", {
+		this._consumerFunction = new Function(this, "ConsumerFunction", {
 			runtime: Runtime.PYTHON_3_9,
-			functionName: "subscriber-function",
+			functionName: "consumer-function",
 			code: Code.fromAsset(
 				path.join(
 					__dirname,
@@ -108,7 +108,7 @@ export class CdkPocStack extends Stack {
 					"..",
 					"src",
 					"functions",
-					"SubscriberFunction"
+					"ConsumerFunction"
 				)
 			),
 			handler: "app.main",
@@ -121,7 +121,7 @@ export class CdkPocStack extends Stack {
 
 		// setup post call to root to publisherLambda.
 		const postSiteIntegration = new LambdaIntegration(
-			this._publisherFunction,
+			this._producerFunction,
 			{
 				timeout: Duration.seconds(29),
 			}
@@ -129,19 +129,19 @@ export class CdkPocStack extends Stack {
 		this._api.root.addMethod("POST", postSiteIntegration);
 
 		// sqs access and subscriber trigger.
-		this._sqs.grantSendMessages(this._publisherFunction);
-		this._sqs.grantConsumeMessages(this._subscriberFunction);
+		this._sqs.grantSendMessages(this._producerFunction);
+		this._sqs.grantConsumeMessages(this._consumerFunction);
 		const eventSource = new aws_lambda_event_sources.SqsEventSource(
 			this._sqs
 		);
-		this._subscriberFunction.addEventSource(eventSource);
+		this._consumerFunction.addEventSource(eventSource);
 
 		// table access.
-		this._table.grantWriteData(this._subscriberFunction);
+		this._table.grantWriteData(this._consumerFunction);
 
 		// s3 access.
-		this._bucket.grantWrite(this._publisherFunction);
-		this._bucket.grantRead(this._subscriberFunction);
-		this._bucket.grantDelete(this._subscriberFunction);
+		this._bucket.grantWrite(this._producerFunction);
+		this._bucket.grantRead(this._consumerFunction);
+		this._bucket.grantDelete(this._consumerFunction);
 	}
 }
