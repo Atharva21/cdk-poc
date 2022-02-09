@@ -54,4 +54,6 @@ jobs:
     steps:
       - name: Install CDK
         run: |
-          echo $(ls)
+          cd ./deploy/
+          npm install -y yarn
+          yarn
