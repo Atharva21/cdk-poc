@@ -68,7 +68,7 @@ jobs:
           node-version: "14"
 
       - name: Install CDK
-        run: yarn install
+        run: yarn --cwd ./deploy/ install
 
       - name: Synth stack
         run: yarn --cwd ./deploy/ cdk synth
