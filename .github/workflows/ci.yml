@@ -81,7 +81,7 @@ jobs:
       - name: CDK Diff
         run: yarn --cwd ./deploy/ cdk diff
 
-      - name: CDK - Bootstrap
+      - name: CDK Bootstrap
         run: yarn --cwd ./deploy/ cdk bootstrap
 
       - name: Create artifact directory
@@ -89,5 +89,3 @@ jobs:
 
       - name: Deploy stack
         run: yarn --cwd ./deploy/ cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
-      # - name: Deploy stack
-      #   run: yarn --cwd packages/bootstrap cdk deploy --require-approval never
