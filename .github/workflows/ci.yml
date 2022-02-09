@@ -29,7 +29,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: build and test
         run: |
-          sudo pip install pipenv -y
+          sudo pip install pipenv
           pipenv install
           pipenv shell
           python -m pytest ./src
