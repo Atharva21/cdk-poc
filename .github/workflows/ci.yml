@@ -49,6 +49,7 @@ jobs:
       - name: Package lambda layer
         run: |
           sudo pip install pipenv
+          pipenv install
           pipenv run pip freeze > requirements.txt
           mkdir python
           cd ./python/
@@ -61,7 +62,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Install Node
         uses: actions/setup-node@v2
@@ -74,7 +75,7 @@ jobs:
       - name: Synth stack
         run: yarn --cwd ./deploy/ cdk synth
 
-      - name: Synth stack
+      - name: Deploy stack
         run: yarn --cwd ./deploy/ cdk deploy --require-approval never
       # - name: Deploy stack
       #   run: yarn --cwd packages/bootstrap cdk deploy --require-approval never
