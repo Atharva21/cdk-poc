@@ -2,6 +2,7 @@
   "name": "cdk-poc",
   "description": "cdk project to deploy sample project to aws",
   "version": "0.1.0",
+  "license": "UNLICENSED",
   "bin": {
     "cdk-poc": "bin/cdk-poc.js"
   },

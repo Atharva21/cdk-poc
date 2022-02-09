@@ -68,7 +68,7 @@ jobs:
           node-version: "14"
 
       - name: Synth stack
-        run: yarn --cwd cdk synth
+        run: yarn --cwd ./deploy/ cdk synth
       # - name: Synth stack
       #     run: yarn --cwd packages/bootstrap cdk synth
 
