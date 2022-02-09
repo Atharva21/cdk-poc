@@ -36,16 +36,6 @@ jobs:
       - name: Test
         run: pipenv run python3 -m pytest ./src
 
-      # Package
-      - name: Package
-        run: |
-          pipenv run pip freeze > requirements.txt
-          mkdir python
-          cd ./python/
-          pip install -r ../requirements.txt -t ./
-          cd ..
-          zip -r python.zip python
-
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -54,6 +44,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      # Package
+      - name: Package lambda layer
+        run: |
+          sudo pip install pipenv
+          pipenv run pip freeze > requirements.txt
+          mkdir python
+          cd ./python/
+          pip install -r ../requirements.txt -t ./
+          cd ..
+          zip -r python.zip python
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
