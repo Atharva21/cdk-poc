@@ -29,7 +29,7 @@ export class CdkPocStack extends Stack {
 
 		// s3 bucket.
 		this._bucket = new s3.Bucket(this, "bucket", {
-			bucketName: "cdk-poc-site-bucket",
+			bucketName: "cdk-poc-bucket",
 			blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
 			versioned: false,
 			encryption: s3.BucketEncryption.UNENCRYPTED,
@@ -40,21 +40,21 @@ export class CdkPocStack extends Stack {
 		// dynamoDB
 		this._table = new dynamodb.Table(this, "table", {
 			partitionKey: {
-				name: "siteId",
+				name: "groupId",
 				type: dynamodb.AttributeType.STRING,
 			},
 			sortKey: {
-				name: "barcode",
+				name: "userId",
 				type: dynamodb.AttributeType.STRING,
 			},
-			tableName: "cdk-poc-site-table",
+			tableName: "cdk-poc-table",
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
 
 		// rest api.
 		this._api = new RestApi(this, "cdk-poc-api", {
 			restApiName: "cdk-poc-api",
-			description: "rest api to store site data in dynamo db.",
+			description: "rest api to store user data in dynamo db.",
 			deployOptions: {
 				stageName: "beta",
 			},
@@ -62,7 +62,7 @@ export class CdkPocStack extends Stack {
 
 		//sqs.
 		this._sqs = new Queue(this, "queue", {
-			queueName: "cdk-poc-site-queue",
+			queueName: "cdk-poc-queue",
 			removalPolicy: RemovalPolicy.DESTROY,
 		});
 
@@ -120,21 +120,21 @@ export class CdkPocStack extends Stack {
 		});
 
 		// setup post call to root to publisherLambda.
-		const postSiteIntegration = new LambdaIntegration(
+		const apiPostIntegration = new LambdaIntegration(
 			this._producerFunction,
 			{
 				timeout: Duration.seconds(29),
 			}
 		);
-		this._api.root.addMethod("POST", postSiteIntegration);
+		this._api.root.addMethod("POST", apiPostIntegration);
 
 		// sqs access and subscriber trigger.
 		this._sqs.grantSendMessages(this._producerFunction);
 		this._sqs.grantConsumeMessages(this._consumerFunction);
-		const eventSource = new aws_lambda_event_sources.SqsEventSource(
+		const sqsEventSource = new aws_lambda_event_sources.SqsEventSource(
 			this._sqs
 		);
-		this._consumerFunction.addEventSource(eventSource);
+		this._consumerFunction.addEventSource(sqsEventSource);
 
 		// table access.
 		this._table.grantWriteData(this._consumerFunction);

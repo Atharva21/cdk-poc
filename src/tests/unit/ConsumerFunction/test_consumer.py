@@ -4,6 +4,7 @@ import boto3
 from uuid import uuid4
 import os
 import json
+# from src.tests.unit.ProducerFunction.test_producer import valid_payload
 
 
 @pytest.fixture(scope='function')
@@ -34,7 +35,7 @@ def lambda_context():
 @pytest.fixture
 def mock_aws(valid_payload):
     with mock_s3(), mock_dynamodb2():
-        s3boto = boto3.resource('s3', region_name='ap-south-1')
+        s3boto = boto3.resource('s3', region_name=os.getenv('AWS_REGION'))
         s3boto.create_bucket(Bucket=os.getenv('BUCKET_NAME'), CreateBucketConfiguration={
             'LocationConstraint': os.getenv('AWS_REGION'),
         })
@@ -45,20 +46,20 @@ def mock_aws(valid_payload):
         ddb = boto3.resource('dynamodb')
         ddb.create_table(TableName=os.getenv('TABLE_NAME'), KeySchema=[
             {
-                'AttributeName': 'siteId',
+                'AttributeName': 'groupId',
                 'KeyType': 'HASH'
             },
             {
-                'AttributeName': 'barcode',
+                'AttributeName': 'userId',
                 'KeyType': 'RANGE'
             },
         ], AttributeDefinitions=[
             {
-                'AttributeName': 'siteId',
+                'AttributeName': 'groupId',
                 'AttributeType': 'S'
             },
             {
-                'AttributeName': 'barcode',
+                'AttributeName': 'userId',
                 'AttributeType': 'S'
             }
         ]

@@ -12,41 +12,21 @@ def valid_payload() -> Dict:
     yield {
         'body': json.dumps(
             {
-                "siteId": "2040111",
-                "origin": "BP",
-                "country": "GB",
-                "items": [
+                "groupId": str(uuid4()),
+                "groupName": str(uuid4()),
+                "region": "india",
+                "users": [
                     {
-                        "barcode": "5012035952808",
-                        "linkedItemId": "2039711",
-                        "stockOnHand": 10,
-                        "availableForSale": True,
-                        "lastUpdated": "2020-08-21T14:20:16.000Z",
-                        "lastModified": "2020-08-21T14:30:16.000Z",
-                        "updateReason": "FullUpdate",
-                        "olaCode": "074"
+                        "userId": str(uuid4()),
+                        "hobby": "chess",
+                        "experience": 2,
                     },
                     {
-                        "barcode": "5012035952809",
-                        "linkedItemId": "2039711",
-                        "stockOnHand": 10,
-                        "availableForSale": True,
-                        "lastUpdated": "2020-08-21T14:20:16.000Z",
-                        "lastModified": "2020-08-21T14:30:16.000Z",
-                        "updateReason": "FullUpdate",
-                        "olaCode": "075"
+                        "userId": str(uuid4()),
+                        "hobby": "basketball",
+                        "experience": 1,
                     },
-                    {
-                        "barcode": "5012035952811",
-                        "linkedItemId": "2039711",
-                        "stockOnHand": 10,
-                        "availableForSale": True,
-                        "lastUpdated": "2020-08-21T14:20:16.000Z",
-                        "lastModified": "2020-08-21T14:30:16.000Z",
-                        "updateReason": "FullUpdate",
-                        "olaCode": "076"
-                    }
-                ]
+                ],
             }
         )
     }
@@ -78,7 +58,7 @@ def mock_aws():
 
 def test_positive_scenario(mock_aws, valid_payload, lambda_context):
     # ! 👇 relative import doesn't work?!
-    # from ....functions.PublisherFunction import app as publisher
+    # from ....functions.Producer import app as producer
     from src.functions.ProducerFunction.app import main as producer
     result = producer(valid_payload, lambda_context)
     assert result == {
