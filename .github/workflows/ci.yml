@@ -31,5 +31,4 @@ jobs:
         run: |
           sudo pip install pipenv
           pipenv install
-          pipenv shell
-          python -m pytest ./src
+          pipenv run python3 -m pytest ./src
