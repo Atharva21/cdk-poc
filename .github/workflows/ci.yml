@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Build
+name: Build and deploy to AWS
 
 # Controls when the workflow will run
 on:
@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build-and-test:
+  ci:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -26,19 +26,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Runs commands using the runners shell
+      # Installs Pipfile Dependencies
       - name: Build
         run: |
           sudo pip install pipenv
           pipenv install
 
+      # Runs pytest
       - name: Test
         run: pipenv run python3 -m pytest ./src
+
+      # Package
+      - name: Package
+        run: pipenv run python3 -m pytest ./src
+
   deploy:
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: ci
     if: github.event_name != 'pull_request'
 
     steps:
       - name: hello
-        run: echo hi
+        run: echo hello
