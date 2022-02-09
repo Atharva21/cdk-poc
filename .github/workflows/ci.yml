@@ -52,10 +52,25 @@ jobs:
     if: github.event_name != 'pull_request'
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Install CDK
-        run: |
-          cd ./deploy/
-          npm install -y yarn
-          yarn
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-access-key-id: ${{ github.event.inputs.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ github.event.inputs.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Synth stack
+        run: yarn --cwd cdk synth
+      # - name: Synth stack
+      #     run: yarn --cwd packages/bootstrap cdk synth
+
+      # - name: Deploy stack
+      #   run: yarn --cwd packages/bootstrap cdk deploy --require-approval never
