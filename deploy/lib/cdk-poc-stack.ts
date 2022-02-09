@@ -119,7 +119,7 @@ export class CdkPocStack extends Stack {
 			layers: [this._lambdaLayer],
 		});
 
-		// setup post call to root to publisherLambda.
+		// setup post call to root to ProducerLambda.
 		const apiPostIntegration = new LambdaIntegration(
 			this._producerFunction,
 			{
@@ -128,7 +128,7 @@ export class CdkPocStack extends Stack {
 		);
 		this._api.root.addMethod("POST", apiPostIntegration);
 
-		// sqs access and subscriber trigger.
+		// sqs access and Consumer trigger.
 		this._sqs.grantSendMessages(this._producerFunction);
 		this._sqs.grantConsumeMessages(this._consumerFunction);
 		const sqsEventSource = new aws_lambda_event_sources.SqsEventSource(
