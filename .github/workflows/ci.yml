@@ -26,25 +26,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # # Installs Pipfile Dependencies
-      # - name: Build
-      #   run: |
-      #     sudo pip install pipenv
-      #     pipenv install
+      # Installs Pipfile Dependencies
+      - name: Build
+        run: |
+          sudo pip install pipenv
+          pipenv install
 
-      # # Runs pytest
-      # - name: Test
-      #   run: pipenv run python3 -m pytest ./src
+      # Runs pytest
+      - name: Test
+        run: pipenv run python3 -m pytest ./src
 
-      # # Package
-      # - name: Package
-      #   run: |
-      #     pipenv run pip freeze > requirements.txt
-      #     mkdir python
-      #     cd ./python/
-      #     pip install -r ../requirements.txt -t ./
-      #     cd ..
-      #     zip -r python.zip python
+      # Package
+      - name: Package
+        run: |
+          pipenv run pip freeze > requirements.txt
+          mkdir python
+          cd ./python/
+          pip install -r ../requirements.txt -t ./
+          cd ..
+          zip -r python.zip python
 
   deploy:
     runs-on: ubuntu-latest
@@ -72,8 +72,8 @@ jobs:
 
       - name: Synth stack
         run: yarn --cwd ./deploy/ cdk synth
-      # - name: Synth stack
-      #     run: yarn --cwd packages/bootstrap cdk synth
 
+      - name: Synth stack
+        run: yarn --cwd ./deploy/ cdk deploy --require-approval never
       # - name: Deploy stack
       #   run: yarn --cwd packages/bootstrap cdk deploy --require-approval never
