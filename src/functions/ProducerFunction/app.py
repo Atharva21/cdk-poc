@@ -27,7 +27,7 @@ def main(event: Dict[str, Any], context: LambdaContext):
     try:
         # write body to s3 bucket
         body = json.loads(event['body'])
-        logger.info(f'publisher lambda called with requestId {request_id}')
+        logger.info(f'producer lambda called with requestId {request_id}')
         filename = f'{uuid.uuid4()}.json'
         s3object = s3.Object(_bucket_name, filename)
         s3object.put(
