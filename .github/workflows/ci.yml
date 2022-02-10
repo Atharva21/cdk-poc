@@ -66,28 +66,36 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - run: cd ./deploy/
+
       - name: Install Node
         uses: actions/setup-node@v2
         with:
           node-version: "14"
 
       - name: Install CDK
-        run: yarn --cwd ./deploy/ install
+        run: yarn install
 
       - name: Test deployment
-        run: yarn --cwd ./deploy/ test
+        run: yarn test
 
       - name: CDK Synth
-        run: yarn --cwd ./deploy/ cdk synth
+        run: cdk synth
 
       - name: CDK Diff
-        run: yarn --cwd ./deploy/ cdk diff
+        run: cdk diff
 
       - name: CDK Bootstrap
-        run: yarn --cwd ./deploy/ cdk bootstrap
+        run: cdk bootstrap
 
       - name: Create artifact directory
         run: mkdir -p artifact
 
       - name: CDK Deploy
-        run: yarn --cwd ./deploy/ cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
+        run: cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
+
+      - name: Upload cdk-outputs artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: aws-artifacts
+          path: artifact/cdk-outputs.json
