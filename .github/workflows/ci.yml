@@ -81,19 +81,19 @@ jobs:
         run: yarn test
 
       - name: CDK Synth
-        run: cdk synth
+        run: yarn cdk synth
 
       - name: CDK Diff
-        run: cdk diff
+        run: yarn cdk diff
 
       - name: CDK Bootstrap
-        run: cdk bootstrap
+        run: yarn cdk bootstrap
 
       - name: Create artifact directory
         run: mkdir -p artifact
 
       - name: CDK Deploy
-        run: cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
+        run: yarn cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
 
       - name: Upload cdk-outputs artifact
         uses: actions/upload-artifact@v2
