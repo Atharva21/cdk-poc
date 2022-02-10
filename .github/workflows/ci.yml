@@ -46,8 +46,8 @@ jobs:
       run:
         working-directory: ./deploy
     steps:
-      # - name: Checkout repository
-      #   uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       # # Package
       # - name: Package lambda layer
