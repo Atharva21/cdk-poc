@@ -45,7 +45,8 @@ def main(event: Dict[str, Any], context: LambdaContext):
             'statusCode': 200,
             'body': 'published message to SQS'
         }
-    except Exception:
+    except Exception as e:
+        logger.error(str(e))
         return {
             'statusCode': 500,
             'body': 'something went wrong'
