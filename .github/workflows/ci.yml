@@ -26,17 +26,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Installs Pipfile Dependencies
-      - name: Build
-        run: |
-          sudo pip install pipenv
-          pipenv install
+      # # Installs Pipfile Dependencies
+      # - name: Build
+      #   run: |
+      #     sudo pip install pipenv
+      #     pipenv install
 
-      # Runs pytest
-      - name: Test
-        run: pipenv run python3 -m pytest ./src
+      # # Runs pytest
+      # - name: Test
+      #   run: pipenv run python3 -m pytest ./src
 
-      # TODO add Linting and coverage checks
+      # # TODO add Linting and coverage checks
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,17 +47,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Package
-      - name: Package lambda layer
-        run: |
-          sudo pip install pipenv
-          pipenv install
-          pipenv run pip freeze > requirements.txt
-          mkdir python
-          cd ./python/
-          pip install -r ../requirements.txt -t ./
-          cd ..
-          zip -r python.zip python
+      # # Package
+      # - name: Package lambda layer
+      #   run: |
+      #     sudo pip install pipenv
+      #     pipenv install
+      #     pipenv run pip freeze > requirements.txt
+      #     mkdir python
+      #     cd ./python/
+      #     pip install -r ../requirements.txt -t ./
+      #     cd ..
+      #     zip -r python.zip python
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
@@ -66,34 +66,38 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Install Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: "14"
+      - run: echo $(pwd)
 
-      - name: Install CDK
-        run: yarn --cwd ./deploy/ install
+      - run: echo $(ls)
 
-      - name: Test deployment
-        run: yarn --cwd ./deploy/ test
+      # - name: Install Node
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: "14"
 
-      - name: CDK Synth
-        run: yarn --cwd ./deploy/ cdk synth
+      # - name: Install CDK
+      #   run: yarn --cwd ./deploy/ install
 
-      - name: CDK Diff
-        run: yarn --cwd ./deploy/ cdk diff
+      # - name: Test deployment
+      #   run: yarn --cwd ./deploy/ test
 
-      - name: CDK Bootstrap
-        run: yarn --cwd ./deploy/ cdk bootstrap
+      # - name: CDK Synth
+      #   run: yarn --cwd ./deploy/ cdk synth
 
-      - name: Create artifact directory
-        run: mkdir -p artifact
+      # - name: CDK Diff
+      #   run: yarn --cwd ./deploy/ cdk diff
 
-      - name: CDK Deploy
-        run: yarn --cwd ./deploy/ cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
+      # - name: CDK Bootstrap
+      #   run: yarn --cwd ./deploy/ cdk bootstrap
 
-      - name: Upload cdk-outputs artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: aws-artifacts
-          path: artifact/cdk-outputs.json
+      # - name: Create artifact directory
+      #   run: mkdir -p artifact
+
+      # - name: CDK Deploy
+      #   run: yarn --cwd ./deploy/ cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
+
+      # - name: Upload cdk-outputs artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: aws-artifacts
+      #     path: artifact/cdk-outputs.json
