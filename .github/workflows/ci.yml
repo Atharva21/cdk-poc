@@ -103,4 +103,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: aws-artifacts
-          path: artifact/cdk-outputs.json
+          path: deploy/artifact/cdk-outputs.json
+          if-no-files-found: error
