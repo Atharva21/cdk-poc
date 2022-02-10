@@ -1,0 +1,42 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build and deploy to AWS
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  teardown:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./deploy
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install CDK
+        run: yarn
+
+      - name: CDK Destroy
+        run: yarn cdk destroy --force
+
+      - name: Delete CDK artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: aws-artifacts
