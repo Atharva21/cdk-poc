@@ -26,17 +26,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # # Installs Pipfile Dependencies
-      # - name: Build
-      #   run: |
-      #     sudo pip install pipenv
-      #     pipenv install
+      # Installs Pipfile Dependencies
+      - name: Build
+        run: |
+          sudo pip install pipenv
+          pipenv install
 
-      # # Runs pytest
-      # - name: Test
-      #   run: pipenv run python3 -m pytest ./src
+      # Runs pytest
+      - name: Test
+        run: pipenv run python3 -m pytest ./src
 
-      # # TODO add Linting and coverage checks
+      # TODO add Linting and coverage checks
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,18 +49,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # # Package
-      # - name: Package lambda layer
-      #   run: |
-      #     cd ..
-      #     sudo pip install pipenv
-      #     pipenv install
-      #     pipenv run pip freeze > requirements.txt
-      #     mkdir python
-      #     cd ./python/
-      #     pip install -r ../requirements.txt -t ./
-      #     cd ..
-      #     zip -r python.zip python
+      # Package
+      - name: Package lambda layer
+        run: |
+          cd ..
+          sudo pip install pipenv
+          pipenv install
+          pipenv run pip freeze > requirements.txt
+          mkdir python
+          cd ./python/
+          pip install -r ../requirements.txt -t ./
+          cd ..
+          zip -r python.zip python
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
@@ -80,27 +80,23 @@ jobs:
       - name: Test deployment
         run: yarn test
 
-      - run: mkdir -p artifact
+      - name: CDK Synth
+        run: yarn cdk synth
 
-      - run: echo $(ls)
+      - name: CDK Diff
+        run: yarn cdk diff
 
-      # - name: CDK Synth
-      #   run: yarn cdk synth
+      - name: CDK Bootstrap
+        run: yarn cdk bootstrap
 
-      # - name: CDK Diff
-      #   run: yarn cdk diff
+      - name: Create artifact directory
+        run: mkdir -p artifact
 
-      # - name: CDK Bootstrap
-      #   run: yarn cdk bootstrap
+      - name: CDK Deploy
+        run: yarn cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
 
-      # - name: Create artifact directory
-      #   run: mkdir -p artifact
-
-      # - name: CDK Deploy
-      #   run: yarn cdk deploy --outputs-file artifact/cdk-outputs.json --require-approval never
-
-      # - name: Upload cdk-outputs artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: aws-artifacts
-      #     path: artifact/cdk-outputs.json
+      - name: Upload cdk-outputs artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: aws-artifacts
+          path: artifact/cdk-outputs.json
