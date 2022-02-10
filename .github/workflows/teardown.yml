@@ -18,25 +18,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # - name: Configure aws credentials
-      #   uses: aws-actions/configure-aws-credentials@master
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: ${{ secrets.AWS_REGION }}
+      # teardown doesnt work without `python.zip` :(
+      - name: Package lambda layer
+        run: |
+          cd ..
+          sudo pip install pipenv
+          pipenv install
+          pipenv run pip freeze > requirements.txt
+          mkdir python
+          cd ./python/
+          pip install -r ../requirements.txt -t ./
+          cd ..
+          zip -r python.zip python
 
-      # - name: Install Node
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: "14"
-
-      # - name: Install CDK
-      #   run: yarn
-
-      # - name: CDK Destroy
-      #   run: yarn cdk destroy --force
-
-      - name: Delete CDK artifacts
-        uses: geekyeggo/delete-artifact@v1
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@master
         with:
-          name: aws-artifacts
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install CDK
+        run: yarn
+
+      - name: CDK Destroy
+        run: yarn cdk destroy --force
