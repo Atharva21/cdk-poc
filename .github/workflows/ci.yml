@@ -66,20 +66,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - run: echo $(pwd)
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
 
-      - run: echo $(ls)
+      - name: CD into deploy/
+        run: cd ./deploy/
 
-      # - name: Install Node
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: "14"
+      - name: Install CDK
+        run: yarn
 
-      # - name: Install CDK
-      #   run: yarn --cwd ./deploy/ install
-
-      # - name: Test deployment
-      #   run: yarn --cwd ./deploy/ test
+      - name: Test deployment
+        run: yarn test
 
       # - name: CDK Synth
       #   run: yarn --cwd ./deploy/ cdk synth
