@@ -40,9 +40,11 @@ Simple, clean, and easy to get started with your custom requirements.
   this will create a `python.zip` as lambda layer for your lambdas
 
 - Locally deploy using aws cdk:
-  prerquisite: configure aws credentials(access_key, secret_key) under ~/.aws/credentials
+
+  prerquisite: configure aws credentials(`aws_access_key_id`, `aws_secret_access_key`) under ~/.aws/credentials
 
   ```bash
+  cd ./deploy
   yarn
   yarn cdk bootstrap
   yarn cdk deploy
