@@ -8,9 +8,9 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 _table_name = os.getenv('TABLE_NAME')
 _bucket_name = os.getenv('BUCKET_NAME')
 
-s3 = boto3.resource('s3')
-ddb = boto3.resource('dynamodb')
-table = ddb.Table(_table_name)
+_s3 = boto3.resource('s3')
+_ddb = boto3.resource('dynamodb')
+_table = _ddb.Table(_table_name)
 
 logger = Logger()
 tracer = Tracer()
@@ -29,7 +29,7 @@ def main(event, context: LambdaContext):
         for record in event['Records']:
             message_body = json.loads(record['body'])
             logger.info(f'sqs message body: {message_body}')
-            s3object = s3.Object(_bucket_name, message_body['file_name'])
+            s3object = _s3.Object(_bucket_name, message_body['file_name'])
             file_content = s3object.get()['Body'].read().decode('utf-8')
             json_content = json.loads(file_content)
             logger.info(f'json content read from s3 object: {json_content}')
@@ -49,7 +49,7 @@ def main(event, context: LambdaContext):
             logger.info(f'number of items to be written in ddb: {len(items)}')
 
             # write items in ddb
-            with table.batch_writer() as batch:
+            with _table.batch_writer() as batch:
                 for item in items:
                     batch.put_item(Item=item)
             logger.info(f'wrote {len(items)} items to ddb table')
