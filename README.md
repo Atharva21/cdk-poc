@@ -1,5 +1,7 @@
 # A AWS CDK Template.
 
+![workflow status](https://github.com/Atharva21/cdk-poc/actions/workflows/ci.yml/badge.svg)
+
 A specially crafted AWS CDK template that is designed as a reference for a fully serverless application <br>
 Simple, clean, and easy to get started with your custom requirements.
 
@@ -9,7 +11,7 @@ Simple, clean, and easy to get started with your custom requirements.
 - Uses python for the lambda backend and typescript for 'infrastructure as a code'.
 - Stuck how to integrate AWS services with CDK? Or how to setup a python lambda testing pipeline? This template is for you to refer!
 
-## Architecture:
+## Example architecture:
 
 ![cdk-poc](https://user-images.githubusercontent.com/35420813/153103540-c649c65d-dd72-4f0e-ba2f-62ca8aa4bb6d.jpg)
 
