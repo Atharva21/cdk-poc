@@ -40,7 +40,10 @@ jobs:
       - name: Linter
         run: pipenv run python -m flake8 ./src
 
-      # TODO add coverage checks
+      - name: Coverage check
+        run: pipenv run python -m pytest ./src/tests/ --cov=. --cov-report=xml --cov-fail-under=95
+
+      # TODO add pylint metric and coverage badge
 
   deploy:
     runs-on: ubuntu-latest
