@@ -2,6 +2,7 @@
   "python.testing.pytestArgs": ["src"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
-  "python.linting.enabled": false,
-  "python.testing.unittestArgs": ["-v", "-s", "./src", "-p", "test*.py"]
+  "python.linting.enabled": true,
+  "python.testing.unittestArgs": ["-v", "-s", "./src", "-p", "test*.py"],
+  "python.linting.flake8Enabled": true
 }

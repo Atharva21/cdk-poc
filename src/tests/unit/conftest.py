@@ -1,3 +1,6 @@
+import json
+from typing import Dict
+from uuid import uuid4
 import pytest
 import os
 import warnings
@@ -18,14 +21,39 @@ def aws_credentials():
     os.environ["POWERTOOLS_TRACE_DISABLED"] = "1"
 
 
+@pytest.fixture(scope="function")
+def valid_payload() -> Dict:
+    yield {
+        "body": json.dumps(
+            {
+                "groupId": str(uuid4()),
+                "groupName": str(uuid4()),
+                "region": "india",
+                "users": [
+                    {
+                        "userId": str(uuid4()),
+                        "hobby": "chess",
+                        "experience": 2,
+                    },
+                    {
+                        "userId": str(uuid4()),
+                        "hobby": "basketball",
+                        "experience": 1,
+                    },
+                ],
+            }
+        )
+    }
+
+
 @pytest.fixture(scope="package", autouse=True)
 def mock_envs():
     "resource variables"
-    os.environ['BUCKET_NAME'] = 'test-bucket'
-    os.environ['TABLE_NAME'] = 'test-table'
-    os.environ['QUEUE_NAME'] = 'test-queue'
+    os.environ["BUCKET_NAME"] = "test-bucket"
+    os.environ["TABLE_NAME"] = "test-table"
+    os.environ["QUEUE_NAME"] = "test-queue"
 
 
 @pytest.fixture(scope="function", autouse=True)
 def disable_metric_warning():
-    warnings.filterwarnings('ignore', 'No metrics to publish*')
+    warnings.filterwarnings("ignore", "No metrics to publish*")

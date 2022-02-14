@@ -30,13 +30,17 @@ jobs:
       - name: Build
         run: |
           sudo pip install pipenv
-          pipenv install
+          pipenv install --dev
 
       # Runs pytest
       - name: Test
-        run: pipenv run python3 -m pytest ./src
+        run: pipenv run python -m pytest ./src
 
-      # TODO add Linting and coverage checks
+      # Runs flake8
+      - name: Linter
+        run: pipenv run python -m flake8 ./src
+
+      # TODO add coverage checks
 
   deploy:
     runs-on: ubuntu-latest
