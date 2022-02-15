@@ -1,6 +1,6 @@
 # A AWS CDK Template.
 
-![workflow status](https://github.com/Atharva21/cdk-poc/actions/workflows/ci.yml/badge.svg)
+![workflow status](https://github.com/Atharva21/cdk-poc/actions/workflows/ci.yml/badge.svg) [![codecov](https://codecov.io/gh/Atharva21/cdk-poc/branch/main/graph/badge.svg)](https://codecov.io/gh/Atharva21/cdk-poc)
 
 A specially crafted AWS CDK template that is designed as a reference for a fully serverless application <br>
 Simple, clean, and easy to get started with your custom requirements.
