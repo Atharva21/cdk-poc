@@ -64,8 +64,9 @@ jobs:
           sudo pip install pipenv
           sudo apt install zip
           pipenv install
-          cd ./.venv/lib/python3.8/site-packages/
-          zip -r ../../../../python.zip ./*
+          cd ./.venv/lib/python3.8/
+          mv ./site-packages ./python
+          zip -r ../../../python.zip ./python
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
