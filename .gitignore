@@ -2,5 +2,7 @@
 **/*.pytest_cache
 python/
 python.zip
+**/.venv
+**/requirements.txt
 **/*coverage*
 **/htmlcov/

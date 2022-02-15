@@ -61,13 +61,10 @@ jobs:
         run: |
           cd ..
           sudo pip install pipenv
+          sudo apt install zip
           pipenv install
-          pipenv run pip freeze > requirements.txt
-          mkdir python
-          cd ./python/
-          pip install -r ../requirements.txt -t ./
-          cd ..
-          zip -r python.zip python
+          cd ./.venv/lib/python3.8/site-packages/
+          zip -r ../../../../python.zip ./*
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
