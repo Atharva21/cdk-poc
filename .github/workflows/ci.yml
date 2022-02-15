@@ -43,6 +43,12 @@ jobs:
       - name: Coverage check
         run: pipenv run python -m pytest ./src/tests/ --cov=. --cov-report=xml --cov-fail-under=95
 
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: coverage.xml
+
       # TODO add pylint metric and coverage badge
 
   deploy:
