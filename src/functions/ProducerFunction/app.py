@@ -5,7 +5,6 @@ import uuid
 import os
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from aws_lambda_powertools import Logger, Metrics, Tracer
-from .foo import yolo
 
 _queue_name = os.getenv("QUEUE_NAME")
 _bucket_name = os.getenv("BUCKET_NAME")
@@ -27,7 +26,6 @@ def main(event: Dict[str, Any], context: LambdaContext):
     logger.structure_logs(append=True, requestId=request_id)
     try:
         # write body to s3 bucket
-        logger.info(yolo)
         body = json.loads(event["body"])
         logger.info(f"producer lambda called with requestId {request_id}")
         filename = f"{uuid.uuid4()}.json"
