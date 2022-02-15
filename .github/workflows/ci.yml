@@ -60,6 +60,7 @@ jobs:
       - name: Package lambda layer
         run: |
           cd ..
+          mkdir .venv
           sudo pip install pipenv
           sudo apt install zip
           pipenv install
