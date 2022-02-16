@@ -28,7 +28,7 @@ Simple, clean, and easy to get started with your custom requirements.
 
   dont have pipenv? checkout [pipenv installation guide.](https://pipenv.pypa.io/en/latest/)
 
-- Develop:
+- **Develop**:
 
   - For changes in **AWS deploy stack**, navigate to `deploy`
     ```bash
@@ -51,7 +51,7 @@ Simple, clean, and easy to get started with your custom requirements.
     You can edit/add/delete your own lambda functions here, just _ensure that they are referred in the stack file mentioned above_
     Note that lambda layer creation is taken care in [CI workflow](https://github.com/Atharva21/cdk-poc/blob/b66804d2970aba01eebaa8c740fda4e8bb8b6363/.github/workflows/ci.yml#L66) so you need not worry about it.
 
-- Test:
+- **Test**:
 
   - Template uses pytest with moto to mock aws environment
     to run the tests
