@@ -22,14 +22,13 @@ jobs:
       - name: Package lambda layer
         run: |
           cd ..
+          mkdir .venv
           sudo pip install pipenv
+          sudo apt install zip
           pipenv install
-          pipenv run pip freeze > requirements.txt
-          mkdir python
-          cd ./python/
-          pip install -r ../requirements.txt -t ./
-          cd ..
-          zip -r python.zip python
+          cd ./.venv/lib/python3.8/
+          mv ./site-packages ./python
+          zip -r ../../../python.zip ./python
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
